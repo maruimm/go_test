@@ -3,14 +3,14 @@ package main
 import (
 	comm "gobrpc/comm"
 	"log"
-	"net"
 	"net/rpc"
+	"net"
+	"net/rpc/jsonrpc"
 )
 
 
-
 func main() {
-	comm.RegisterHelloService(new(comm.HelloService))
+	rpc.RegisterName("HelloService", new(comm.HelloService))
 
 	listener, err := net.Listen("tcp", ":1234")
 	if err != nil {
@@ -23,6 +23,6 @@ func main() {
 			log.Fatal("Accept error:", err)
 		}
 
-		go rpc.ServeConn(conn)
+		go rpc.ServeCodec(jsonrpc.NewServerCodec(conn))
 	}
 }
