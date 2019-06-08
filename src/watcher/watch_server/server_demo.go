@@ -12,24 +12,21 @@ import (
 	"time"
 	"sync"
 	"fmt"
+	"math/rand"
 )
 
-type KVStoreService struct {}
-
-func (p *KVStoreService) Hello(request string, reply *string) error {
-	time.Sleep(1*time.Second)
-	*reply = "hello:" + request
-	return nil
-}
 
 type KVStoreServiceInterface = interface {
-	Hello(request string, reply *string) error
+	Set(kv [2]string, reply *struct{}) error
+	Watch(timeoutSecond int, keyChanged *string) error
+	Get(key string, value *string) error
+
 }
 
 const KVStoreServiceName = "KVStoreService"
 
-func RegisterHelloService(svc KVStoreServiceInterface) error {
-	return rpc.RegisterName(HelloServiceName, svc)
+func RegisterKVStoreService(svc KVStoreServiceInterface) error {
+	return rpc.RegisterName(KVStoreServiceName, svc)
 }
 
 
@@ -44,6 +41,25 @@ func NewKVStoreService() *KVStoreService {
 		m:      make(map[string]string),
 		filter: make(map[string]func(key string)),
 	}
+}
+
+func (p *KVStoreService) Watch(timeoutSecond int, keyChanged *string) error {
+	id := fmt.Sprintf("watch-%s-%03d", time.Now(), rand.Int())
+	ch := make(chan string, 10) // buffered
+
+	p.mu.Lock()
+	p.filter[id] = func(key string) { ch <- key }
+	p.mu.Unlock()
+
+	select {
+	case <-time.After(time.Duration(timeoutSecond) * time.Second):
+		return fmt.Errorf("timeout")
+	case key := <-ch:
+		*keyChanged = key
+		return nil
+	}
+
+	return nil
 }
 
 func (p *KVStoreService) Get(key string, value *string) error {
@@ -76,7 +92,7 @@ func (p *KVStoreService) Set(kv [2]string, reply *struct{}) error {
 
 func main() {
 
-	RegisterHelloService(new(HelloService))
+	RegisterKVStoreService(NewKVStoreService())
 
 	listener, err := net.Listen("tcp", ":1234")
 	if err != nil {
