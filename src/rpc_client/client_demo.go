@@ -17,9 +17,10 @@ func main() {
 
 	var ticker* time.Ticker = time.NewTicker(1)
 	ticks := ticker.C
-	for name := range ticks {
+	for  {
 
-		_ := name;
+		 <- ticks
+
 		fmt.Printf("< start....\n")
 		go func() {
 
