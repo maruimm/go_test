@@ -1,0 +1,10 @@
+
+
+package main;
+
+message Test {
+    string Label = 1;
+    int32 Type = 2;
+    optional int32     Reps = 3;
+}
+

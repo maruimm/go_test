@@ -17,19 +17,22 @@ func main() {
 
 	var ticker* time.Ticker = time.NewTicker(1)
 	ticks := ticker.C
+	for name := range ticks {
 
-	go func() {
-		for _ = range ticks {
+		_ := name;
+		fmt.Printf("< start....\n")
+		go func() {
+
 			var reply string
-			err = client.Call("HelloService.Hello", "hello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_testhello_test", &reply)
+			err = client.Call("path/to/pkg.HelloService.Hello", "btest", &reply)
 
 			if err != nil {
 				log.Fatal(err)
 			}
 
 			fmt.Println(reply)
-		}
-	}()
+		}()
+	}
 
 	chan1 := make(chan int)
 	<- chan1
