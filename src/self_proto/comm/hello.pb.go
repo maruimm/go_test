@@ -81,7 +81,7 @@ var fileDescriptor_61ef911816e0a8ce = []byte{
 type HelloService struct{}
 
 func (p *HelloService) Hello(request String, reply *String) error {
-	var s = "value:" + request.GetValue() + " end~~~~"
+	var s = "abbbba"
 	*reply = String{Value: s}
 	return nil
 }

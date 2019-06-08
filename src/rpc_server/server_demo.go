@@ -9,6 +9,7 @@ import (
 	_ "io"
 	"log"
 	"net"
+	"time"
 )
 
 // 需要传输的对象
@@ -47,6 +48,7 @@ func (serverHandler ServerHandler) SaveName(rpcObj RpcObj, returnObj *ReplyObj) 
 type HelloService struct {}
 
 func (p *HelloService) Hello(request string, reply *string) error {
+	time.Sleep(1*time.Second)
 	*reply = "hello:" + request
 	return nil
 }

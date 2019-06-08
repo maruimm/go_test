@@ -4,11 +4,13 @@ import (
 	"net/rpc"
 	"log"
 	"net"
+	"time"
 )
 
 type HelloService struct{}
 
 func (p *HelloService) Hello(request string, reply *string) error {
+	time.Sleep(1*time.Second)
 	*reply = "hello:" + request
 	return nil
 }

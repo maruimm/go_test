@@ -57,7 +57,7 @@ const tmplService = `
 type {{.ServiceName}} struct{}
 
 func (p *{{.ServiceName}}) Hello(request String, reply *String) error {
-	var s = "value:" + request.GetValue() + " end~~~~"
+	var s = "abbbba"
 	*reply = String{Value: s}
 	return nil
 }

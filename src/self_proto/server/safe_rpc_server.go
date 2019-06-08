@@ -19,7 +19,6 @@ func main() {
 	if err != nil {
 		log.Fatal("ListenTCP error:", err)
 	}
-
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
