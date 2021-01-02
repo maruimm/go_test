@@ -50,9 +50,6 @@ func requestHandler(showLog bool) func(conn net.Conn) {
 					return 0, nil, nil
 				}
 			}
-
-
-
 			return 0, nil, nil
 		}
 		// 设置匹配函数

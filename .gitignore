@@ -1,1 +1,4 @@
 *.log
+src/test/client
+src/test/main
+src/test/log
