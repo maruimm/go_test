@@ -10,6 +10,10 @@ import (
 	"time"
 )
 
+const (
+	PopTryTimes = 3
+)
+
 type ConnPool interface {
 	Release(closer io.ReadWriteCloser, pooled bool) error
 	Acquire(timeWait time.Duration) (io.ReadWriteCloser, error)
@@ -48,15 +52,19 @@ type myConnPool struct {
 	port uint16
 }
 
-func NewConnPool() ConnPool {
+func NewConnPool(idleConnCount int,
+	maxConnCount int,
+	idleTime time.Duration,
+	addr string,
+	port uint16) ConnPool {
 	pool := &myConnPool{
-		idleConnCount:2,
-		maxConnCount:5,
-		idleTime:10* time.Second,
+		idleConnCount:idleConnCount,
+		maxConnCount:maxConnCount,
+		idleTime:idleTime,
 		lk: new(sync.RWMutex),
 		factoryConn: net.Dial,
-		addr: "127.0.0.1",
-		port: 8899,
+		addr: addr,
+		port: port,
 	}
 	pool.usedChan = make(chan struct{}, pool.maxConnCount)
 	for i := 0; i < pool.maxConnCount; i++{
@@ -116,7 +124,7 @@ func (p *myConnPool) Acquire(timeWait time.Duration) (io.ReadWriteCloser, error)
 		if time.Now().Sub(conn.lasUsedTime) > 5 * time.Second {
 			err := conn.conn.Close()
 			fmt.Printf("close result: %+v\n", err)
-			if try < 3 {
+			if try < PopTryTimes {
 				try = try + 1
 				continue
 			} else {
