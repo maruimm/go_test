@@ -1,3 +1,3 @@
-module github.com/maruimm/myGoLearning/src/tools
+module github.com/maruimm/myGoLearning
 
 go 1.13

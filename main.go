@@ -6,5 +6,8 @@ import (
 )
 
 func main() {
-	fmt.Printf("hello world\n")
+	h := heap.NewHeap(5)
+	fmt.Printf("befor adjust %+v\n",h )
+	h.Adjust()
+	fmt.Printf("after adjust %+v\n",h )
 }
