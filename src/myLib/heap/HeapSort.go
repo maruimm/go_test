@@ -1,4 +1,4 @@
-package main
+package heap
 
 import (
 	"errors"
@@ -14,22 +14,21 @@ var (
 )
 
 
-type BigRootHeep struct {
+type Heap struct {
 	size uint32
 	els []Elem
 	height uint32
 }
 
-func (heep *BigRootHeep) leftChild(node uint32) (uint32, error){
-	lc := uint32(node * 2)
-	//fmt.Printf("===>lc:%d, size:%d,node:%d\n", lc, heep.size, node)
+func (heep *Heap) leftChild(node uint32) (uint32, error){
+	lc := uint32(node << 1)
 	if lc > heep.size {
 		return 0, NoLeftChild
 	}
 	return lc , nil
 }
 
-func (heep *BigRootHeep) rightChild(node uint32) (uint32, error) {
+func (heep *Heap) rightChild(node uint32) (uint32, error) {
 	lc ,err := heep.leftChild(node)
 	if err != nil {
 		return 0, err
@@ -42,18 +41,18 @@ func (heep *BigRootHeep) rightChild(node uint32) (uint32, error) {
 }
 
 
-func (heep* BigRootHeep) Swap(i, j uint32) {
+func (heep* Heap) Swap(i, j uint32) {
 	heep.els[i],heep.els[j] = heep.els[j],heep.els[i]
 }
 
-func (heep* BigRootHeep) Compare(i, j uint32) bool{
+func (heep* Heap) Compare(i, j uint32) bool{
 	if heep.els[i] > heep.els[j] {
 		return true
 	}
 	return false
 }
 
-func (heep* BigRootHeep) SelectChild(adjustNode uint32) (uint32, error){
+func (heep* Heap) SelectChild(adjustNode uint32) (uint32, error){
 	var swapNode uint32
 	lc, err := heep.leftChild(uint32(adjustNode))
 	if err != nil { //不可能没有左子树
@@ -75,7 +74,7 @@ func (heep* BigRootHeep) SelectChild(adjustNode uint32) (uint32, error){
 	return swapNode,nil
 }
 
-func (heep *BigRootHeep) Adjust() {
+func (heep *Heap) Adjust() {
 	adjustLevel := heep.height - 1
 	for i := adjustLevel; i >= 1; i-- {
 		rightNode := (1 << i) - 1
@@ -102,7 +101,7 @@ func (heep *BigRootHeep) Adjust() {
 }
 
 
-func NewBigRootHeep(size uint32) *BigRootHeep{
+func NewHeap(size uint32) *Heap{
 	//els := make([]Elem, 1, size + 1)
 
 	els := []Elem{0,1,4,3,2,5}
@@ -113,7 +112,7 @@ func NewBigRootHeep(size uint32) *BigRootHeep{
 		height = height + 1
 	}
 
-	return &BigRootHeep {
+	return &Heap {
 		size: size,
 		els: els,
 		height:height,
@@ -121,13 +120,13 @@ func NewBigRootHeep(size uint32) *BigRootHeep{
 }
 
 
-
+/*
 func main() {
-	heep := NewBigRootHeep(5)
+	heep := NewHeap(5)
 	fmt.Printf("heep:%+v\n", heep)
 
 	heep.Adjust()
 
 	fmt.Printf("heep:%+v\n", heep)
 
-}
+}*/
