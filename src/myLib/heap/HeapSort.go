@@ -1,4 +1,4 @@
-package github.com/maruimm/myGoLearning/src/myLib/heap
+package heap
 
 import (
 	"errors"
